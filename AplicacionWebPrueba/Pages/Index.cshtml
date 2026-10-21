@@ -6,9 +6,99 @@
 
 <div class="text-center">
     <h1 class="display-4">MI ESPACIO DIGITAL</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-<div class="text-center">
-    <p>¡Bienvenido, Juan Sebastian Gomez!</p> 
+    <p>
+        Learn about
+        <a href="https://learn.microsoft.com/aspnet/core">
+            building Web apps with ASP.NET Core
+        </a>.
+    </p>
 </div>
 
+<div class="text-center">
+    <p>¡Bienvenido, Juan Sebastian Gomez!</p>
+</div>
+
+<div class="card shadow-sm mx-auto" style="max-width: 450px;">
+    <div class="card-body">
+        <h2 class="h4 text-center mb-4">Calculadora suma</h2>
+
+        <form id="formCalculadora"
+              method="post"
+              asp-page-handler="SumarAjax">
+
+            <div class="mb-3">
+                <label for="numero1" class="form-label">
+                    Primer número
+                </label>
+
+                <input type="number"
+                       id="numero1"
+                       name="Numero1"
+                       class="form-control"
+                       step="any"
+                       required />
+            </div>
+
+            <div class="mb-3">
+                <label for="numero2" class="form-label">
+                    Segundo número
+                </label>
+
+                <input type="number"
+                       id="numero2"
+                       name="Numero2"
+                       class="form-control"
+                       step="any"
+                       required />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Sumar
+            </button>
+        </form>
+
+        <div id="resultado"
+             class="alert mt-3 d-none"
+             role="alert"
+             aria-live="polite">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const formulario = document.getElementById('formCalculadora');
+        const resultado = document.getElementById('resultado');
+
+        formulario.addEventListener('submit', async function (evento) { 
+            console.log(formulario.action);
+            evento.preventDefault();
+
+            resultado.className = 'alert alert-info mt-3';
+            resultado.textContent = 'Calculando...';
+
+            try {
+                const respuesta = await fetch(formulario.action, {
+                    method: 'POST',
+                    body: new FormData(formulario)10.
+                });
+
+                if (!respuesta.ok) {
+                    throw new Error('Error HTTP: ' + respuesta.status);
+                }
+
+                const datos = await respuesta.json();
+                console.log(datos);
+
+                resultado.className = 'alert alert-success mt-3';
+                resultado.textContent = 'Resultado: ' + datos.resultado + ' Es la suma.';
+            } catch (error) {
+                console.error('Error:', error);
+
+                resultado.className = 'alert alert-danger mt-3';
+                resultado.textContent =
+                    'No se pudo calcular. Revisa la consola del navegador.';
+            }
+        });
+    });
+</script>
